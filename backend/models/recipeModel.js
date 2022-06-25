@@ -19,6 +19,11 @@ const nutritionSchema = mongoose.Schema({
 })
 
 const recipeSchema = mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     name: {
         type: String,
         required: [true, 'Please add a recipe name'],
@@ -34,8 +39,9 @@ const recipeSchema = mongoose.Schema({
         required: [true, 'Please add a category']
     },
     // ingridients: {
-    //     type: [{}],
-    //     required: [true, 'Please select ingridients']
+    //     type: [mongoose.Schema.Types.ObjectId],
+    //     required: [true, 'Please select ingridients'],
+    //     ref: 'Ingrident'
     // },
     steps: {
         type: [String],
