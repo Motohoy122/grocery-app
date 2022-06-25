@@ -1,35 +1,66 @@
 const asyncHandler = require('express-async-handler')
+const { globalAgent } = require('http')
+const { create } = require('../models/recipeModel')
+
+const Recipe = require('../models/recipeModel')
+
 // @desc Get recipes
 // @route GET /api/recipes
 // @access Private
 const getRecipes = asyncHandler(async (req, res) => {
-    res.status(200).json({message: 'get recipes'})
+    const recipes = await Recipe.find()
+    res.status(200).json(recipes)
 })
 
 // @desc create a recipe
 // @route POST /api/recipes
 // @access Private
 const createRecipes = asyncHandler(async (req, res) => {
-    // console.log(req.body)
-    if(!req.body.text) {
+    // console.log(req.body) 
+    if(!req.body.name || !req.body.timeDuration || !req.body.category || !req.body.steps || !req.body.tools || !req.body.numOfServings) {
         res.status(400)
         throw new Error('Please add a text field')
     }
-    res.status(200).json({message: 'Set recipes'})
+
+    const recipe = await Recipe.create({
+        name: req.body.name,
+        timeDuration: req.body.timeDuration,
+        category: req.body.category,
+        steps: req.body.steps,
+        tools: req.body.tools,
+        nutrition: req.body.nutrition,
+        numOfServings: req.body.numOfServings
+    })
+    res.status(200).json(recipe)
 })
 
 // @desc Update a recipe
 // @route PUT /api/recipes
 // @access Private
 const updateRecipes = asyncHandler(async (req, res) => {
-    res.status(200).json({message: `Update recipes ${req.params.id}`})
+    const recipe = Recipe.findById(req.params.id)
+    if(!recipe) {
+        res.status(400)
+        throw new Error('Recipe not found')
+    }
+
+    const updatedRecipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, {new: true})
+
+    res.status(200).json(updatedRecipe)
 })
 
 // @desc DELETE a recipe
 // @route DELETE /api/recipes/:id
 // @access Private
 const deleteRecipes = asyncHandler(async (req, res) => {
-    res.status(200).json({message: `Delete recipes ${req.params.id}`})
+    const recipe = Recipe.findById(req.params.id)
+    if(!recipe) {
+        res.status(400)
+        throw new Error('Recipe not found')
+    }
+    await recipe.deleteOne()
+
+    res.status(200).json({id: req.params.id})
 })
 
 module.exports = {
