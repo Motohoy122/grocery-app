@@ -12,14 +12,19 @@ const measurementSchema = mongoose.Schema({
 })
 
 const ingridientSchema = mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     name: {
         type: String,
         required: [true, 'Please add an ingridient name.']
     },
-    measurements: measurementSchema,
-    alternativeIngridient: {
+    alternativeIngridients: {
         type: [String],
-    }
-})
+    },
+    measurement: measurementSchema,
+},{timestamps: true})
 
 module.exports = mongoose.model('Ingridient', ingridientSchema)

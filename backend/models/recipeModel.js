@@ -16,6 +16,11 @@ const nutritionSchema = mongoose.Schema({
         min: 0,
         max: 5000,
     },
+    calories: {
+        type: Number,
+        min: 0,
+        max: 50000,
+    },
 })
 
 const recipeSchema = mongoose.Schema({
@@ -38,14 +43,13 @@ const recipeSchema = mongoose.Schema({
         type: [String],
         required: [true, 'Please add a category']
     },
-    // ingridients: {
-    //     type: [mongoose.Schema.Types.ObjectId],
-    //     required: [true, 'Please select ingridients'],
-    //     ref: 'Ingrident'
-    // },
+    ingridients: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: [true, 'Please select ingridients'],
+        ref: 'Ingrident'
+    },
     steps: {
         type: [String],
-        required: [true, 'Please add a step by step instructions']
     },
     tools: {
         type: [String],

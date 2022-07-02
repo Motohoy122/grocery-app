@@ -4,6 +4,7 @@ const { create } = require('../models/recipeModel')
 
 const Recipe = require('../models/recipeModel')
 const User = require('../models/userModel')
+// const Ingridient = require('../models/ingridientModel')
 
 
 // @desc Get recipes
@@ -11,6 +12,8 @@ const User = require('../models/userModel')
 // @access Private
 const getRecipes = asyncHandler(async (req, res) => {
     const recipes = await Recipe.find({ user: req.user.id })
+    // const ingridient = await Ingridient.find({_id: recipes[2].ingridients[1]})
+    // console.log(ingridient)
     res.status(200).json(recipes)
 })
 
@@ -31,6 +34,7 @@ const createRecipes = asyncHandler(async (req, res) => {
         category: req.body.category,
         steps: req.body.steps,
         tools: req.body.tools,
+        ingridients: req.body.ingridients,
         nutrition: req.body.nutrition,
         numOfServings: req.body.numOfServings
     })
