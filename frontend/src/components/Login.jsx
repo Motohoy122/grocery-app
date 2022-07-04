@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState, useEffect} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -26,6 +26,21 @@ const Copyright = (props) => {
   }
     
   const Login = () => {
+    const [formData, setFormData] = useState({
+      email: '',
+      password: '',
+    })
+
+    const {email, password} = formData
+
+    const onChange = (e) => {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value
+      }))
+    }
+
+
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -60,6 +75,8 @@ const Copyright = (props) => {
                 id="email"
                 label="Email Address"
                 name="email"
+                value={email}
+                onChange={onChange}
                 autoComplete="email"
                 autoFocus
               />
@@ -69,6 +86,8 @@ const Copyright = (props) => {
                 fullWidth
                 name="password"
                 label="Password"
+                value={password}
+                onChange={onChange}
                 type="password"
                 id="password"
                 autoComplete="current-password"

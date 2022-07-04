@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Link} from 'react-router-dom'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,10 +23,17 @@ const Navbar = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Grocery App
+            <Link to='/'>
+              Grocery App
+            </Link>
           </Typography>
-          <Button color="inherit">Login</Button>
-          <Button color="inherit">Register</Button>
+          <Link to='/login'>
+            <Button color="inherit">Login</Button>
+          </Link>
+          <Link to='/register'>
+            <Button color="inherit">Register</Button>
+          </Link>
+
         </Toolbar>
       </AppBar>
     </Box>

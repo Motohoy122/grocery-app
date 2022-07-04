@@ -1,3 +1,4 @@
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Login from './components/Login'
 import Register from './components/Register'
@@ -11,15 +12,22 @@ const theme = createTheme();
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Navbar />
-      <Container>
-        {/* <Login /> */}
-        {/* <Register /> */}
-        <Dashboard />
-      </Container>
-    </ThemeProvider>
+    <>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Navbar />
+          <Container>
+            <Routes>
+              <Route path='/' element={<Dashboard />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/register' element={<Register />} />
+              
+            </Routes>
+          </Container>
+        </ThemeProvider>
+    </Router>
+    </>
     
   );
 }

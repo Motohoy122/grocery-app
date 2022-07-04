@@ -59,7 +59,9 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const RecipeForm = () => {
     const [ingridientList, setIngridientList] = useState([{ingridient: '', quantity: '', measurement:''}])
+    const [instructionList, setInstructionList] = useState([''])
 
+    // Ingridient state management functions
     const handleIngridientAdd = () => {
         setIngridientList([...ingridientList, {ingridient: '', quantity: '', measurement:''}])
     }
@@ -75,6 +77,24 @@ export const RecipeForm = () => {
         const ingridients = [...ingridientList]
         ingridients[index][name] = value
         setIngridientList(ingridients)
+    }
+
+    // Instruction state management functions
+    const handleInstructionAdd = () => {
+        setInstructionList([...instructionList, ''])
+    }
+
+    const handleInstructionRemove = (index) => {
+        const instructions = [...instructionList]
+        instructions.splice(index, 1)
+        setInstructionList(instructions)
+    }
+
+    const handleInstructionChange = (e, index) => {
+        const { name, value } = e.target
+        const instructions = [...instructionList]
+        instructions[index] = value
+        setInstructionList(instructions)
     }
 
     return (
@@ -200,30 +220,79 @@ export const RecipeForm = () => {
                 ))
                 }
                 <Grid container>
-                    <Grid item xs={12}>
-                            <ul>
-                                {ingridientList.map(ingridient => (
-                                    <li>
-                                        {ingridient.ingridient} - {ingridient.quantity} {ingridient.measurement}
-                                    </li>
-                                    
-                                ))}
-                            </ul>
-                            
+                    <Grid item xs={12}
+                        sx={{textAlign: 'left'}}
+                    >
+                        <ul>
+                            {ingridientList.map(ingridient => (
+                                <li>
+                                    {ingridient.ingridient} - {ingridient.quantity} {ingridient.measurement}
+                                </li>
+                                
+                            ))}
+                        </ul>
+                        
+                    </Grid>
+                </Grid>
+                
+                {
+                    instructionList.map((instruction, index) =>(
+                        <Grid container spacing={1}
+                            sx={{width: '100%',}}
+                        >
+                            {/* <Grid item xs={1}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <Typography>
+                                    {index + 1})
+                                </Typography>
+                            </Grid> */}
+                            <Grid item xs={11}>
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    label={`Step ${index+1}`}
+                                    name="steps"
+                                    onChange={e => handleInstructionChange(e, index)}
+                                    value={instruction}
+                                    autoFocus    
+                                />
+                            </Grid>
+                            { index === instructionList.length-1 ?
+                                <Grid item xs={1}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        textAlign: 'left'
+                                    }}
+                                >
+                                    <IconButton onClick={handleInstructionAdd} >
+                                        <AddCircleIcon color='primary' sx={{fontSize: 30}}/>
+                                    </IconButton>
+                                </Grid> 
+                                :
+                                <Grid item xs={1}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        textAlign: 'left'
+                                    }}
+                                >
+                                    <IconButton onClick={() => handleInstructionRemove(index)} >
+                                        <RemoveCircleIcon color='primary' sx={{fontSize: 30}}/>
+                                    </IconButton>
+                                </Grid>
+                                }  
                         </Grid>
-                </Grid>
+                    ))
+                }
                 <Grid container spacing={1}
-                sx={{width: '100%',}}
-            >
-                <Grid item xs={12}>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Instructions"
-                        name="steps"
-                        autoFocus    
-                    />
-                </Grid>
+                    sx={{width: '100%',}}
+                >
                 <Grid item xs={6}>
                     <TextField
                         margin="normal"
@@ -279,6 +348,16 @@ export const RecipeForm = () => {
                         name="Protein"
                         autoFocus
                     />
+                </Grid>
+                <Grid item xs={12}>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                    Submit
+                    </Button>
                 </Grid>
             </Grid>
         </Box>

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState, useEffect} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -25,6 +25,22 @@ const Copyright = (props) => {
 }
   
   const Register = () => {
+    const [formData, setFormData] = useState({
+      name: '',
+      email: '',
+      password: '',
+      password2: ''
+    })
+
+    const {name, email, password, password2} = formData
+
+    const onChange = (e) => {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value
+      }))
+    }
+
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -59,6 +75,8 @@ const Copyright = (props) => {
                 id="name"
                 label="Name"
                 name="name"
+                value={name}
+                onChange={onChange}
                 autoComplete="name"
                 autoFocus
               />
@@ -69,6 +87,8 @@ const Copyright = (props) => {
                 id="email"
                 label="Email Address"
                 name="email"
+                value={email}
+                onChange={onChange}
                 autoComplete="email"
                 autoFocus
               />
@@ -79,6 +99,8 @@ const Copyright = (props) => {
                 name="password"
                 label="Password"
                 type="password"
+                value={password}
+                onChange={onChange}
                 id="password"
                 autoComplete="current-password"
               />
@@ -86,10 +108,12 @@ const Copyright = (props) => {
                 margin="normal"
                 required
                 fullWidth
-                name="verify"
+                name="password2"
                 label="Confirm Password"
                 type="password"
-                id="verify"
+                value={password2}
+                onChange={onChange}
+                id="password2"
                 autoComplete="current-password"
               />
               <FormControlLabel
