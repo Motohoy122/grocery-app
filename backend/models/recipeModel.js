@@ -23,6 +23,40 @@ const nutritionSchema = mongoose.Schema({
     },
 })
 
+// const measurementSchema = mongoose.Schema({
+//     measurementQuantity: {
+//         type: Number,
+//         required: [true, 'Please add the a measurement quantity.']
+//     },
+//     measurementType: {
+//         type: String,
+//         required: [true, 'Please select the a measurement type.']
+//     },
+// })
+
+const ingridientSchema = mongoose.Schema({
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: 'User'
+    // },
+    name: {
+        type: String,
+        required: [true, 'Please add an ingridient name.']
+    },
+    alternativeIngridients: {
+        type: [String],
+    },
+    measurementQuantity: {
+        type: Number,
+        required: [true, 'Please add the a measurement quantity.']
+    },
+    measurementType: {
+        type: String,
+        required: [true, 'Please select the a measurement type.']
+    },
+},{timestamps: true})
+
 const recipeSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -43,11 +77,7 @@ const recipeSchema = mongoose.Schema({
         type: [String],
         required: [true, 'Please add a category']
     },
-    ingridients: {
-        type: [mongoose.Schema.Types.ObjectId],
-        required: [true, 'Please select ingridients'],
-        ref: 'Ingrident'
-    },
+    ingridients: [ingridientSchema],
     steps: {
         type: [String],
     },

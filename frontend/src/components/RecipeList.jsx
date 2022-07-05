@@ -1,4 +1,7 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
+import {createRecipe} from '../features/recipes/recipeSlice'
+import {useNavigate} from 'react-router-dom'
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -14,12 +17,16 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import Spinner from './Spinner'
+import {getRecipes, deleteRecipe, reset} from '../features/recipes/recipeSlice'
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
@@ -57,324 +64,19 @@ const Item = styled(Paper)(({ theme }) => ({
     marginTop: 1,
   }))
 
-export const RecipeForm = () => {
-    const [ingridientList, setIngridientList] = useState([{ingridient: '', quantity: '', measurement:''}])
-    const [instructionList, setInstructionList] = useState([''])
 
-    // Ingridient state management functions
-    const handleIngridientAdd = () => {
-        setIngridientList([...ingridientList, {ingridient: '', quantity: '', measurement:''}])
-    }
 
-    const handleIngridientRemove = (index) => {
-        const ingridients = [...ingridientList]
-        ingridients.splice(index, 1)
-        setIngridientList(ingridients)
-    }
-
-    const handleIngridientChange = (e, index) => {
-        const { name, value } = e.target
-        const ingridients = [...ingridientList]
-        ingridients[index][name] = value
-        setIngridientList(ingridients)
-    }
-
-    // Instruction state management functions
-    const handleInstructionAdd = () => {
-        setInstructionList([...instructionList, ''])
-    }
-
-    const handleInstructionRemove = (index) => {
-        const instructions = [...instructionList]
-        instructions.splice(index, 1)
-        setInstructionList(instructions)
-    }
-
-    const handleInstructionChange = (e, index) => {
-        const { name, value } = e.target
-        const instructions = [...instructionList]
-        instructions[index] = value
-        setInstructionList(instructions)
-    }
-
+export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps, tools, ingridients, category}) => {
+    const dispatch = useDispatch()
     return (
-        <Box 
-            sx={{
-                width: '100%',
-                textAlign: 'center'
-            }}
+        <Box             
+            sx={{ width: '100%', }}
         >
-            <Typography 
-                sx={{width: '100%', textAlign: 'center'}}
-                component="h1" 
-                variant="h5"
-            >Create a Recipe </Typography>
-            <Grid container spacing={1}
-                sx={{width: '100%',}}
-            >
-                <Grid item xs={12}>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        required
-                        label="Name"
-                        name="name"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Time Duration"
-                        name="timeDuration"
-                        autoFocus
-                        type="number"
-                        InputProps={{
-                            endAdornment: <InputAdornment position="end">min</InputAdornment>
-                        }}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Category"
-                        name="category"
-                        autoFocus
-                    />
-                </Grid>
-            </Grid>
-            
-                {ingridientList.map((ingridient, index) =>(
-                    <Grid container spacing={1}
-                        sx={{width: '100%', }}
-                        key={index}
-                    >
-                        <Grid item xs={6}>
-                            <TextField
-                                margin="normal"
-                                fullWidth
-                                required
-                                label="Ingridients"
-                                name="ingridient"
-                                value={ingridient.ingridient}
-                                onChange={e => handleIngridientChange(e, index)}
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={2}>
-                            <TextField
-                                margin="normal"
-                                fullWidth
-                                required
-                                label="Quantity"
-                                name="quantity"
-                                type="number"
-                                value={ingridient.quantity}
-                                onChange={e => handleIngridientChange(e, index)}
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <TextField
-                                margin="normal"
-                                fullWidth
-                                required
-                                label="Measurement Type"
-                                name="measurement"
-                                value={ingridient.measurement}
-                                onChange={e => handleIngridientChange(e, index)}
-                                autoFocus
-                            />
-                        </Grid>
-                        { index === ingridientList.length-1 ?
-                        <Grid item xs={1}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                textAlign: 'left'
-                            }}
-                        >
-                            <IconButton onClick={handleIngridientAdd} >
-                                <AddCircleIcon color='primary' sx={{fontSize: 30}}/>
-                            </IconButton>
-                        </Grid> 
-                        :
-                        <Grid item xs={1}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                textAlign: 'left'
-                            }}
-                        >
-                            <IconButton onClick={() => handleIngridientRemove(index)} >
-                                <RemoveCircleIcon color='primary' sx={{fontSize: 30}}/>
-                            </IconButton>
-                        </Grid>
-                        }   
-                        
-                    </Grid>
-                ))
-                }
-                <Grid container>
-                    <Grid item xs={12}
-                        sx={{textAlign: 'left'}}
-                    >
-                        <ul>
-                            {ingridientList.map(ingridient => (
-                                <li>
-                                    {ingridient.ingridient} - {ingridient.quantity} {ingridient.measurement}
-                                </li>
-                                
-                            ))}
-                        </ul>
-                        
-                    </Grid>
-                </Grid>
-                
-                {
-                    instructionList.map((instruction, index) =>(
-                        <Grid container spacing={1}
-                            sx={{width: '100%',}}
-                        >
-                            {/* <Grid item xs={1}
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                <Typography>
-                                    {index + 1})
-                                </Typography>
-                            </Grid> */}
-                            <Grid item xs={11}>
-                                <TextField
-                                    margin="normal"
-                                    fullWidth
-                                    label={`Step ${index+1}`}
-                                    name="steps"
-                                    onChange={e => handleInstructionChange(e, index)}
-                                    value={instruction}
-                                    autoFocus    
-                                />
-                            </Grid>
-                            { index === instructionList.length-1 ?
-                                <Grid item xs={1}
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        textAlign: 'left'
-                                    }}
-                                >
-                                    <IconButton onClick={handleInstructionAdd} >
-                                        <AddCircleIcon color='primary' sx={{fontSize: 30}}/>
-                                    </IconButton>
-                                </Grid> 
-                                :
-                                <Grid item xs={1}
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        textAlign: 'left'
-                                    }}
-                                >
-                                    <IconButton onClick={() => handleInstructionRemove(index)} >
-                                        <RemoveCircleIcon color='primary' sx={{fontSize: 30}}/>
-                                    </IconButton>
-                                </Grid>
-                                }  
-                        </Grid>
-                    ))
-                }
-                <Grid container spacing={1}
-                    sx={{width: '100%',}}
-                >
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Equipment"
-                        name="Tools"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Number of Servings"
-                        name="numOfServings"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Calories"
-                        name="calories"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Carbs"
-                        name="carbs"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Fats"
-                        name="fats"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Protein"
-                        name="Protein"
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                    Submit
-                    </Button>
-                </Grid>
-            </Grid>
-        </Box>
-    )
-}
-
-export const Recipe = () => {
-    return (
-        <Box sx={{ 
-            width: '100%',
-            mt: 1,
-        }}>
         <Stack spacing={2}
-            sx={{width: '100%',}}
+            sx={{ width: '100%', }}
         >
         <Item>
-            <Accordion sx={{width: '100%', boxShadow: 'none'}}>
+            <Accordion sx={{width: '100%', boxShadow: 'none', heigth: 'fit-content'}}>
                 <AccordionSummary>   
                     <Box
                         sx={{
@@ -395,7 +97,7 @@ export const Recipe = () => {
                                 marginLeft: 1,
                             }}
                         >
-                            Recipe 1
+                            {name}
                         </Typography>
                     </Box>
                     <Box>
@@ -422,7 +124,80 @@ export const Recipe = () => {
                     </Box>
                 </AccordionSummary>
                 <AccordionDetails>
-                    TEST
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <Typography>
+                                Time: {timeDuration}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography>
+                                # of Servings: {numOfServings}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography>
+                                Ingridients: 
+                                <List sx={{display: 'flex', width: '100%'}}>
+                                    {
+                                        ingridients.map(ingridient => (
+                                            <ListItem>
+                                                <ListItemText primary={ingridient.name} secondary={`${ingridient.measurementQuantity} ${ingridient.measurementType}`}/>
+                                            </ListItem>
+                                        ))
+                                    }
+                                </List>
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                        <Typography sx={{display:'flex', width: '100%'}}>
+                            Tools:&nbsp; {
+                                    tools.map(tool => (
+                                        <Typography> {tool}, </Typography>
+                                    ))
+                                }
+
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography>
+                                Instructions: 
+                                <List sx={{width: '100%'}}>
+                                    {
+                                        steps.map((step, index) => (
+                                            <ListItem>
+                                                <ListItemText primary={`${index + 1}) ${step}`}/>
+                                            </ListItem>
+                                        ))
+                                    }
+                                </List>
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography>
+                                Nutrition: 
+                            </Typography>
+                            <List sx={{display:'flex', width: '100%'}}>
+                                <ListItem>
+                                    <ListItemText primary={`Calories: ${nutrition.calories}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={`Carbs: ${nutrition.carbs}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={`Fat: ${nutrition.fat}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={`Protein: ${nutrition.protein}`} />
+                                </ListItem>
+                            </List>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button onClick={()=>dispatch(deleteRecipe(id))}>
+                                Delete
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </AccordionDetails>
             </Accordion>
         </Item>
@@ -432,52 +207,93 @@ export const Recipe = () => {
 }
 
 const RecipeList = () => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const {user} = useSelector((state) => state.auth)
+    const {recipes, isLoading, isError, message} = useSelector((state) => state.recipes)
+
+    useEffect(()=> {
+        if(!user) {
+            navigate('/login')
+        }
+        dispatch(getRecipes())
+
+        return () => {
+            dispatch(reset)
+        }
+    }, [user, navigate, isError, message, dispatch])
     return (
-        <RecipeForm />
-        // <Container maxWidth="xs" sx={{mb: 4, mt:0}}>      
-        //     <Box
-        //         sx={{
-        //         marginTop: 8,
-        //         display: 'flex',
-        //         flexDirection: 'column',
-        //         alignItems: 'center',
-        //         }}
-        //     >
-        //         <Box sx={{textAlign: 'right', width: '100%'}}>
-        //             <IconButton color="primary" aria-label="add a recipe" component="span" >
-        //                 <AddCircleIcon />
-        //             </IconButton>
-        //         </Box>
-        //         <Accordion
-        //             sx={{
-        //                 width: '100%'
-        //             }}
-        //         >
-        //             <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-                        
-        //             >
-        //                 <Box 
-        //                     sx={{
-        //                         width: '100%',
-        //                         display: 'flex',
-        //                         justifyContent: 'space-between'
-        //                     }}
-        //                 >
-        //                     <Typography component="h1" variant="h5">
-        //                             Recipes
-        //                     </Typography>
+        
+        // <RecipeForm />
+        
+        <Container maxWidth="xs" sx={{mb: 4, mt:0, height: 'fit-content'}}>     
+            
+                <Box
+                    sx={{
+                    marginTop: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    }}
+                >
+                    
+                    
+                    <Accordion
+                        sx={{
+                            width: '100%'
+                        }}
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
                             
-        //                 </Box>
-        //             </AccordionSummary>   
-        //             <AccordionDetails>
-        //                 <Recipe />
-        //             </AccordionDetails>  
-        //         </Accordion> 
-        //     </Box> 
-        // </Container>
+                        >
+                            <Box 
+                                sx={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <Typography component="h1" variant="h5">
+                                        Recipes
+                                </Typography>
+                                
+                            </Box>
+                        </AccordionSummary>   
+                        <AccordionDetails>
+                            {recipes.length > 0 ? 
+                            
+                                    recipes.map(recipe => (
+                                        // {console.log('Recipe test', recipe)}
+                                        <Recipe 
+                                            key={recipe._id}
+                                            id={recipe._id}
+                                            name={recipe.name}
+                                            timeDuration={recipe.timeDuration}
+                                            numOfServings={recipe.numOfServings}
+                                            nutrition={recipe.nutrition}
+                                            steps={recipe.steps}
+                                            tools={recipe.tools}
+                                            ingridients={recipe.ingridients}
+                                            category={recipe.category}
+                                        />
+                                    ))
+                                
+                                :
+                                <Typography>
+                                    Add your go to recipes!
+                                </Typography>
+                            } 
+                        </AccordionDetails>  
+                    </Accordion> 
+                    
+                </Box> 
+                
+            
+        </Container> 
     )
 }
 
