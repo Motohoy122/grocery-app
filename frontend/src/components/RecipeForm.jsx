@@ -146,6 +146,7 @@ const RecipeForm = () => {
             },
             numOfServings: 0,
         })
+        dispatch(displayAddRecipe(false))
     }
 
     console.log('Recipe State:', recipe)
