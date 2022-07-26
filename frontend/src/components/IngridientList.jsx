@@ -1,4 +1,5 @@
-import React from 'react'
+import {useState, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -14,6 +15,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import {getRecipe} from '../features/recipes/recipeSlice'
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
@@ -34,10 +36,62 @@ const Item = styled(Paper)(({ theme }) => ({
 
   }));
 
+export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureType}) => {
+    const [recipe, setRecipe] = useState()
+    const {singleRecipe} = useSelector((state) => state.recipes)
+    
+    const dispatch = useDispatch()
+    useEffect(() => {
+        // dispatch(getRecipe(id))
+        // console.log('Single Recipe ingridients ', ingridients)
+        
+        // console.log(recipe)
+    },[])
+    
+    return (
+        <Item>
+            <Typography
+                sx={{
+                    fontWeight: 600,
+                    fontSize: 20,
+                    letterSpacing: .64,
+                    marginLeft: 1,
+                }}
+            >
+                {name}
+            </Typography>
+            <Typography
+                sx={{
+                    fontWeight: 700,
+                    fontSize: '34px',
+                    textAlign: 'right',
+                }}
+            >
+                {ingridientQuantity * recipeQuantity}
+                <Typography
+                    component="span"
+                    sx={{
+                        opacity: '.8',
+                        fontWeight: '600',
+                        fontSize: '13px',
+                        ml: '3px',
+                    }}
+                >
+                    {measureType}
+                </Typography>
+            </Typography>
+        </Item>
+    )
+}
+
 const IngridientList = () => {
+    
+    const {selectedRecipes, isLoading, isError, message} = useSelector((state) => state.recipes)
+    
+                // {/* {console.log('selectedRecipes array list',selectedRecipes)} */}
+
     return (
         <Container maxWidth="xs">  
-        
         
          
         
@@ -69,70 +123,20 @@ const IngridientList = () => {
                             marginTop: 1,
                         }}>
                         <Stack spacing={2}>
-                            <Item>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 600,
-                                        fontSize: 20,
-                                        letterSpacing: .64,
-                                        marginLeft: 1,
-                                    }}
-                                >
-                                    Ingridient 1
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 700,
-                                        fontSize: '34px',
-                                        textAlign: 'right',
-                                    }}
-                                >
-                                    5
-                                    <Typography
-                                        component="span"
-                                        sx={{
-                                            opacity: '.8',
-                                            fontWeight: '600',
-                                            fontSize: '13px',
-                                            ml: '3px',
-                                        }}
-                                    >
-                                        cups
-                                    </Typography>
-                                </Typography>
-                            </Item>
-                            <Item>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 600,
-                                        fontSize: 20,
-                                        letterSpacing: .64,
-                                        marginLeft: 1,
-                                    }}
-                                >
-                                    Ingridient 2
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 700,
-                                        fontSize: '34px',
-                                        textAlign: 'right',
-                                    }}
-                                >
-                                    3
-                                    <Typography
-                                        component="span"
-                                        sx={{
-                                            opacity: '.8',
-                                            fontWeight: '600',
-                                            fontSize: '13px',
-                                            ml: '3px',
-                                        }}
-                                    >
-                                        cups
-                                    </Typography>
-                                </Typography>
-                            </Item>
+                            {selectedRecipes.length > 0 ? 
+                                selectedRecipes.map(recipe => {
+                                    // console.log(recipe)
+                                    if(recipe.checked === true) {
+                                        return recipe.ingridients.map( ingridient => {
+                                            return(<Ingridient name={ingridient.name} recipeQuantity={recipe.quantity} ingridientQuantity={ingridient.measurementQuantity} measureType={ingridient.measurementType}/>)}
+                                        )
+                                    }
+                                })
+                            :
+                                <Item>failed</Item>
+                            }
+                            
+                            
                         </Stack>
                     </Box>
                 </AccordionDetails>  

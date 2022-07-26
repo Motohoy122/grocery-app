@@ -17,6 +17,25 @@ const getRecipes = asyncHandler(async (req, res) => {
     res.status(200).json(recipes)
 })
 
+// @desc Get recipes
+// @route GET /api/recipes/{id}
+// @access Private
+const getRecipe = asyncHandler(async (req, res) => {
+    const recipe = await Recipe.findById(req.params.id)
+    if(!recipe) {
+        res.status(400)
+        throw new Error('Recipe not found')
+    }
+
+    if(!req.user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+    // const ingridient = await Ingridient.find({_id: recipes[2].ingridients[1]})
+    console.log(recipe)
+    res.status(200).json(recipe)
+})
+
 // @desc create a recipe
 // @route POST /api/recipes
 // @access Private
@@ -98,6 +117,7 @@ const deleteRecipes = asyncHandler(async (req, res) => {
 
 module.exports = {
     getRecipes,
+    getRecipe,
     createRecipes,
     updateRecipes,
     deleteRecipes

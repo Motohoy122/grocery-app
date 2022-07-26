@@ -26,7 +26,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Spinner from './Spinner'
-import {getRecipes, deleteRecipe, reset} from '../features/recipes/recipeSlice'
+import {getRecipes, deleteRecipe, reset, updateSelectedRecipeList} from '../features/recipes/recipeSlice'
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
@@ -71,8 +71,14 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
     const [recipeSelected, setRecipeSelected] = useState({
         id: id,
         checked: false,
-        quantity: 1
+        quantity: 1,
+        ingridients: ingridients
     })
+
+    useEffect(() => {
+        // console.log('recipeSelected Value ', recipeSelected)
+        dispatch(updateSelectedRecipeList(recipeSelected))
+    }, [recipeSelected])
 
     const handleCheckbox = (e) => {
         // console.log('e.target.checked ', e.target.checked)
@@ -82,6 +88,7 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
                 checked: e.target.checked
             }
         })
+        
     }
 
     const handleQuantityChange = (e, mathType) => {
@@ -105,153 +112,147 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
     }
 
     return (
-        
-                <Item>
-                    <Accordion sx={{width: '100%', boxShadow: 'none', heigth: 'fit-content'}}>
-                        <AccordionSummary>   
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    width: '100%',
+        <Item key={id}>
+            <Accordion sx={{width: '100%', boxShadow: 'none', heigth: 'fit-content'}}>
+                <AccordionSummary>   
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            width: '100%',
+                        }}
+                    >
+                        
+                        <FormControlLabel
+                            control={<Checkbox 
+                                value="remember" 
+                                color="primary" 
+                                onChange={(e) => {handleCheckbox(e)}}
+                                
+                            />}
+                        />
+                        <Typography
+                            sx={{
+                                fontWeight: 600,
+                                fontSize: 20,
+                                letterSpacing: .64,
+                                marginLeft: 1,
+                            }}
+                        >
+                            {name}
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <CounterBox>
+                            <IconButton 
+                                onClick={(e) => {
+                                    handleQuantityChange(e, 'subtract')
+                                    console.log(recipeSelected)
                                 }}
                             >
-                                
-                                <FormControlLabel
-                                    control={<Checkbox 
-                                        value="remember" 
-                                        color="primary" 
-                                        onChange={(e) => {
-                                            
-                                            handleCheckbox(e)
-                                            
-                                            // console.log('recipeSelected Value ', recipeSelected)
-                                        }}
-                                        
-                                    />}
-                                />
-                                <Typography
-                                    sx={{
-                                        fontWeight: 600,
-                                        fontSize: 20,
-                                        letterSpacing: .64,
-                                        marginLeft: 1,
-                                    }}
-                                >
-                                    {name}
-                                </Typography>
-                            </Box>
-                            <Box>
-                                <CounterBox>
-                                    <IconButton 
-                                        onClick={(e) => {
-                                            handleQuantityChange(e, 'subtract')
-                                            console.log(recipeSelected)
-                                        }}
-                                    >
-                                        <RemoveIcon />
-                                    </IconButton>
-                                    <Typography
-                                        component="span"
-                                        sx={{
-                                            opacity: '.8',
-                                            fontWeight: '600',
-                                            fontSize: '13px',
-                                            ml: '3px',
-                                        }}
-                                    ></Typography>
-                                    <CounterValue>
-                                        {recipeSelected.quantity}
-                                    </CounterValue>
-                                    <IconButton
-                                        onClick={(e) => {
-                                            handleQuantityChange(e, 'add')
-                                            console.log(recipeSelected)
-                                        }}
-                                    >
-                                        <AddIcon />
-                                    </IconButton>
-                                </CounterBox>
-                            </Box>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
-                                    <Typography>
-                                        Time: {timeDuration}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography>
-                                        # of Servings: {numOfServings}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography>
-                                        Ingridients: 
-                                        <List sx={{display: 'flex', width: '100%'}}>
-                                            {
-                                                ingridients.map(ingridient => (
-                                                    <ListItem>
-                                                        <ListItemText primary={ingridient.name} secondary={`${ingridient.measurementQuantity} ${ingridient.measurementType}`}/>
-                                                    </ListItem>
-                                                ))
-                                            }
-                                        </List>
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                <Typography sx={{display:'flex', width: '100%'}}>
-                                    Tools:&nbsp; {
-                                            tools.map(tool => (
-                                                <Typography> {tool}, </Typography>
-                                            ))
-                                        }
+                                <RemoveIcon />
+                            </IconButton>
+                            <Typography
+                                component="span"
+                                sx={{
+                                    opacity: '.8',
+                                    fontWeight: '600',
+                                    fontSize: '13px',
+                                    ml: '3px',
+                                }}
+                            ></Typography>
+                            <CounterValue>
+                                {recipeSelected.quantity}
+                            </CounterValue>
+                            <IconButton
+                                onClick={(e) => {
+                                    handleQuantityChange(e, 'add')
+                                    console.log(recipeSelected)
+                                }}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        </CounterBox>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <Typography>
+                                Time: {timeDuration}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography>
+                                # of Servings: {numOfServings}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography>
+                                Ingridients: 
+                                <List sx={{display: 'flex', width: '100%'}}>
+                                    {
+                                        ingridients.map(ingridient => (
+                                            <ListItem>
+                                                <ListItemText primary={ingridient.name} secondary={`${ingridient.measurementQuantity} ${ingridient.measurementType}`}/>
+                                            </ListItem>
+                                        ))
+                                    }
+                                </List>
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                        <Typography sx={{display:'flex', width: '100%'}}>
+                            Tools:&nbsp; {
+                                    tools.map(tool => (
+                                        <Typography> {tool}, </Typography>
+                                    ))
+                                }
 
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography>
-                                        Instructions: 
-                                        <List sx={{width: '100%'}}>
-                                            {
-                                                steps.map((step, index) => (
-                                                    <ListItem>
-                                                        <ListItemText primary={`${index + 1}) ${step}`}/>
-                                                    </ListItem>
-                                                ))
-                                            }
-                                        </List>
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography>
-                                        Nutrition: 
-                                    </Typography>
-                                    <List sx={{display:'flex', width: '100%'}}>
-                                        <ListItem>
-                                            <ListItemText primary={`Calories: ${nutrition.calories}`} />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary={`Carbs: ${nutrition.carbs}`} />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary={`Fat: ${nutrition.fat}`} />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary={`Protein: ${nutrition.protein}`} />
-                                        </ListItem>
-                                    </List>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Button onClick={()=>dispatch(deleteRecipe(id))}>
-                                        Delete
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </AccordionDetails>
-                    </Accordion>
-            </Item>
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography>
+                                Instructions: 
+                                <List sx={{width: '100%'}}>
+                                    {
+                                        steps.map((step, index) => (
+                                            <ListItem>
+                                                <ListItemText primary={`${index + 1}) ${step}`}/>
+                                            </ListItem>
+                                        ))
+                                    }
+                                </List>
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography>
+                                Nutrition: 
+                            </Typography>
+                            <List sx={{display:'flex', width: '100%'}}>
+                                <ListItem>
+                                    <ListItemText primary={`Calories: ${nutrition.calories}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={`Carbs: ${nutrition.carbs}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={`Fat: ${nutrition.fat}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={`Protein: ${nutrition.protein}`} />
+                                </ListItem>
+                            </List>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button onClick={()=>dispatch(deleteRecipe(id))}>
+                                Delete
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+    </Item>
             
     )
 }

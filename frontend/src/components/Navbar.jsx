@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux'
 import {logout, reset} from '../features/auth/authSlice'
 import {Link, useNavigate} from 'react-router-dom'
@@ -20,6 +20,9 @@ const Navbar = () => {
     dispatch(reset)
     navigate('/')
   }
+  useEffect(() => {
+    // console.log(user)
+  }, [user])
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

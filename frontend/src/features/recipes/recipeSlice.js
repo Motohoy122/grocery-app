@@ -7,8 +7,11 @@ const initialState = {
     isError: false,
     isLoading: false,
     isSuccess: false,
-    message: ''
+    message: '',
+    selectedRecipes: [],
+    singleRecipe: {}
 }
+
 
 // Create new recipe
 export const createRecipe = createAsyncThunk('recipes/create', async (recipeData, thunkAPI) => {
@@ -32,6 +35,17 @@ export const getRecipes = createAsyncThunk('recipes/getAll', async (_, thunkAPI)
     }
 })
 
+// Get a recipe
+export const getRecipe = createAsyncThunk('recipes/getRecipe', async (id, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await recipeService.getRecipe(id, token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 // Delete user recipe
 export const deleteRecipe = createAsyncThunk('recipes/delete', async (id, thunkAPI) => {
     try {
@@ -48,7 +62,25 @@ export const recipeSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
-        displayAddRecipe: (state, action) => {state.addRecipe = action.payload}
+        displayAddRecipe: (state, action) => {state.addRecipe = action.payload},
+        updateSelectedRecipeList: (state, action) => {
+            let recipeExists = false
+            state.selectedRecipes = state.selectedRecipes.map(recipe => {
+                if(recipe.id === action.payload.id) {
+                    recipe = action.payload
+                    recipeExists = true
+                    return recipe
+                }
+                else {
+                    return recipe
+                }
+            })
+            if(recipeExists === false) {
+                state.selectedRecipes.push(action.payload)
+                
+            }
+            recipeExists = false
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -63,7 +95,7 @@ export const recipeSlice = createSlice({
             .addCase(createRecipe.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
-                state.message(action.payload)
+                state.message = action.payload 
             })
             .addCase(getRecipes.pending, (state) => {
                 state.isLoading = true
@@ -76,7 +108,20 @@ export const recipeSlice = createSlice({
             .addCase(getRecipes.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
-                state.message(action.payload)
+                state.message = action.payload
+            })
+            .addCase(getRecipe.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getRecipe.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.singleRecipe = action.payload
+            })
+            .addCase(getRecipe.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
             })
             .addCase(deleteRecipe.pending, (state) => {
                 state.isLoading = true
@@ -89,10 +134,11 @@ export const recipeSlice = createSlice({
             .addCase(deleteRecipe.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
-                state.message(action.payload)
+                state.message = action.payload
             })
+            
     }
 })
 
-export const {reset, displayAddRecipe} = recipeSlice.actions
+export const {reset, displayAddRecipe, updateSelectedRecipeList} = recipeSlice.actions
 export default recipeSlice.reducer
