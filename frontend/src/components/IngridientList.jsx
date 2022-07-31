@@ -37,7 +37,7 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureType}) => {
-    const [recipe, setRecipe] = useState()
+    const [checkRecipe, setCheckRecipe] = useState(false)
     const {singleRecipe} = useSelector((state) => state.recipes)
     
     const dispatch = useDispatch()
@@ -50,12 +50,25 @@ export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureTyp
     
     return (
         <Item>
+            <FormControlLabel
+                control={<Checkbox 
+                    value="remember" 
+                    color="primary" 
+                    onClick={(e) => {
+                        // e.stopPropagation();
+                        // handleCheckbox(e)
+                        setCheckRecipe(e.target.checked)
+                    }}
+                    
+                />}
+            />
             <Typography
                 sx={{
                     fontWeight: 600,
                     fontSize: 20,
                     letterSpacing: .64,
                     marginLeft: 1,
+                    textDecoration: checkRecipe ? 'line-through' : ''
                 }}
             >
                 {name}
@@ -67,7 +80,7 @@ export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureTyp
                     textAlign: 'right',
                 }}
             >
-                {ingridientQuantity * recipeQuantity}
+                {/* {ingridientQuantity * recipeQuantity} */}
                 <Typography
                     component="span"
                     sx={{
@@ -77,7 +90,7 @@ export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureTyp
                         ml: '3px',
                     }}
                 >
-                    {measureType}
+                    {/* {measureType} */}
                 </Typography>
             </Typography>
         </Item>
@@ -91,7 +104,7 @@ const IngridientList = () => {
                 // {/* {console.log('selectedRecipes array list',selectedRecipes)} */}
 
     return (
-        <Container maxWidth="xs">  
+        <Container maxWidth="s">  
         
          
         
@@ -101,6 +114,9 @@ const IngridientList = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                ml:'auto', 
+                mr:'auto',
+                width: '70%'
                 }}
             >
                 <Accordion
@@ -139,6 +155,15 @@ const IngridientList = () => {
                             
                         </Stack>
                     </Box>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        // onClick={handleSubmit}
+                    >
+                    Email Ingridients
+                    </Button>
                 </AccordionDetails>  
                 </Accordion> 
             </Box> 

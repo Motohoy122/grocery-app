@@ -82,6 +82,7 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
 
     const handleCheckbox = (e) => {
         // console.log('e.target.checked ', e.target.checked)
+        e.stopPropagation();
         setRecipeSelected(prevState => {
             return {
                 ...prevState,
@@ -92,6 +93,7 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
     }
 
     const handleQuantityChange = (e, mathType) => {
+        e.stopPropagation();
         setRecipeSelected(prevState => {
             if(mathType === 'add' && recipeSelected.quantity <= 100) {
                 return {
@@ -127,7 +129,10 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
                             control={<Checkbox 
                                 value="remember" 
                                 color="primary" 
-                                onChange={(e) => {handleCheckbox(e)}}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCheckbox(e)
+                                }}
                                 
                             />}
                         />
@@ -278,21 +283,24 @@ const RecipeList = () => {
         
         // <RecipeForm />
         
-        <Container maxWidth="xs" sx={{mb: 4, mt:0, height: 'fit-content'}}>     
+        <Container maxWidth="s" sx={{mb: 4, mt:0, height: 'fit-content'}}>     
             
                 <Box
                     sx={{
                     marginTop: 0,
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center',
+                    alignItems: 'center', 
+                    ml:'auto', 
+                    mr:'auto',
+                    width: '70%'
                     }}
                 >
                     
                     
                     <Accordion
                         sx={{
-                            width: '100%'
+                            width: '100%', ml:0, mr:0
                         }}
                     >
                         <AccordionSummary
@@ -317,10 +325,10 @@ const RecipeList = () => {
                         <AccordionDetails>
                             {recipes.length > 0 ? 
                                 <Box             
-                                    sx={{ width: '100%', }}
+                                    sx={{ width: '100%', ml:0, mr:0}}
                                 >
                                     <Stack spacing={2}
-                                        sx={{ width: '100%', }}
+                                        sx={{ width: '100%', ml:0, mr:0}}
                                     >
                                     {recipes.map(recipe => (
                                         // {console.log('Recipe test', recipe)}

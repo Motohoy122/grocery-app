@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 const RecipeForm = () => {
     const [ingridientList, setIngridientList] = useState([{name: '', measurementQuantity: '', measurementType:''}])
     const [instructionList, setInstructionList] = useState([''])
+    const [categoryItem, setCategoryItem] = useState('')
+    const [toolItem, setToolItem] = useState('')
 
     const [recipe, setRecipe] = useState({
         name: '',
@@ -201,11 +203,36 @@ const RecipeForm = () => {
                         fullWidth
                         label="Category"
                         name="category"
-                        value={category}
-                        onChange={(e)=>handleChange(e)}
+                        value={categoryItem}
+                        // onChange={(e)=>handleChange(e)}
+                        onChange={(e)=>setCategoryItem(e.target.value)}
+                        onKeyPress={e=>{
+                            // console.log(e)
+                            if(e.key === 'Enter') {
+                                console.log('enter pressed')
+                                setRecipe((prevState) => ({
+                                    ...prevState,
+                                    [e.target.name]: [...category, e.target.value]
+                                }))
+                                setCategoryItem('')
+                                console.log('recipe category ', category)
+                            }
+                        }}
                         autoFocus
                     />
                 </Grid>
+                { category.length > 0 ?
+                    <Grid item xs={12}>
+                        <ul>
+                        {category.map(item => {
+                            return (<li>
+                                {item}
+                            </li>)
+                        })}
+                        </ul>
+                    </Grid> :
+                    <></>
+                }
             </Grid>
             
                 {ingridientList.map((ingridient, index) =>(
@@ -360,11 +387,35 @@ const RecipeForm = () => {
                         fullWidth
                         label="Equipment"
                         name="tools"
-                        value={tools}
-                        onChange={(e)=>handleChange(e)}
+                        value={toolItem}
+                        onChange={(e)=>setToolItem(e.target.value)}
+                        onKeyPress={e=>{
+                            // console.log(e)
+                            if(e.key === 'Enter') {
+                                console.log('enter pressed')
+                                setRecipe((prevState) => ({
+                                    ...prevState,
+                                    [e.target.name]: [...tools, e.target.value]
+                                }))
+                                setToolItem('')
+                                console.log('recipe tool ', tools)
+                            }
+                        }}
                         autoFocus
                     />
                 </Grid>
+                { tools.length > 0 ?
+                    <Grid item xs={12}>
+                        <ul>
+                        {tools.map(item => {
+                            return (<li>
+                                {item}
+                            </li>)
+                        })}
+                        </ul>
+                    </Grid> :
+                    <></>
+                }
                 <Grid item xs={6}>
                     <TextField
                         margin="normal"

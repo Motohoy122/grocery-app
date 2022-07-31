@@ -43,8 +43,8 @@ const Dashboard = () => {
                 <RecipeForm />
             :
             <>
-                <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                <Grid container spacing={1} sx={{width: '100%', ml:0, mr:0}}>
+                    <Grid item xs={12} sx={{ width: '100%', ml:0, mr:0}}>
                         <IngridientList />
                     </Grid>
                     <Grid item xs={12}>
@@ -54,7 +54,7 @@ const Dashboard = () => {
                             </IconButton>
                         </Box>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{ width: '100%', ml:0, mr:0}}>
                         <RecipeList sx={{ width: '100%'}}/>
                     </Grid>
                 </Grid>
