@@ -70,6 +70,7 @@ export const Recipe = ({id, name, timeDuration, numOfServings, nutrition, steps,
     const dispatch = useDispatch()
     const [recipeSelected, setRecipeSelected] = useState({
         id: id,
+        recipeName: name,
         checked: false,
         quantity: 1,
         ingridients: ingridients

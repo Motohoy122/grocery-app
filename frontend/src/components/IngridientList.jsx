@@ -36,7 +36,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
   }));
 
-export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureType}) => {
+export const Ingridient = ({name, recipeName, recipeQuantity, ingridientQuantity, measureType}) => {
     const [checkRecipe, setCheckRecipe] = useState(false)
     const {singleRecipe} = useSelector((state) => state.recipes)
     
@@ -75,12 +75,14 @@ export const Ingridient = ({name, recipeQuantity, ingridientQuantity, measureTyp
             </Typography>
             <Typography
                 sx={{
-                    fontWeight: 700,
-                    fontSize: '34px',
-                    textAlign: 'right',
+                    fontWeight: 600,
+                    fontSize: 20,
+                    letterSpacing: .64,
+                    marginLeft: 1,
+                    textDecoration: checkRecipe ? 'line-through' : ''
                 }}
             >
-                {/* {ingridientQuantity * recipeQuantity} */}
+                {ingridientQuantity * recipeQuantity} {measureType} from {recipeName}
                 <Typography
                     component="span"
                     sx={{
@@ -105,9 +107,6 @@ const IngridientList = () => {
 
     return (
         <Container maxWidth="s">  
-        
-         
-        
             <Box
                 sx={{
                 marginTop: 8,
@@ -144,7 +143,8 @@ const IngridientList = () => {
                                     // console.log(recipe)
                                     if(recipe.checked === true) {
                                         return recipe.ingridients.map( ingridient => {
-                                            return(<Ingridient name={ingridient.name} recipeQuantity={recipe.quantity} ingridientQuantity={ingridient.measurementQuantity} measureType={ingridient.measurementType}/>)}
+                                            // console.log('Ingridient ', recipe.recipeName)
+                                            return(<Ingridient name={ingridient.name} recipeName={recipe.recipeName} recipeQuantity={recipe.quantity} ingridientQuantity={ingridient.measurementQuantity} measureType={ingridient.measurementType}/>)}
                                         )
                                     }
                                 })

@@ -209,13 +209,13 @@ const RecipeForm = () => {
                         onKeyPress={e=>{
                             // console.log(e)
                             if(e.key === 'Enter') {
-                                console.log('enter pressed')
+                                // console.log('enter pressed')
                                 setRecipe((prevState) => ({
                                     ...prevState,
                                     [e.target.name]: [...category, e.target.value]
                                 }))
                                 setCategoryItem('')
-                                console.log('recipe category ', category)
+                                // console.log('recipe category ', category)
                             }
                         }}
                         autoFocus
